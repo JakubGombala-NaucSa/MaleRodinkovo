@@ -50,6 +50,7 @@ def Start():
     Animacia()    
 
 def Vysledok(roll):
+    global peniaze
     if roll[0] == roll[1] == roll[2] and roll[0] == 7:
         peniaze += 10
     elif roll[0] == roll[1] == roll[2]:
