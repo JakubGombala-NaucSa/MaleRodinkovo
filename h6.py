@@ -17,9 +17,11 @@ platno.create_text(20,10, text = "Body: ")
 platno.create_text(60,10, text = str(body), tag="body")
 
 def uprav_body():
-    global body
+    global body, bodov_za_sekundu
     platno.delete("body")
+    platno.delete("bzs")
     platno.create_text(60,10, text = str(body), tag="body")
+    platno.create_text(440,10, text= str(bodov_za_sekundu), tag="bzs")
 
 def klik_lave(event):
     global body, bodov_za_klik
@@ -54,7 +56,45 @@ def plus_jedna():
         uprav_body()
     else:
         vyhodnotenie(False, cena_2-body)
- 
+
+def my_loop():
+    global body, bodov_za_sekundu
+    body += bodov_za_sekundu/10
+    body = round(body, 1)
+    uloz()
+    uprav_body()
+    platno.after(100, my_loop)
+
+def uloz():
+    subor = open("save.txt", "w")
+
+    subor.write(str(body) + "\n")
+    subor.write(str(bodov_za_klik) + "\n")
+    subor.write(str(bodov_za_sekundu) + "\n")
+    subor.write(str(cena_1) + "\n")
+    subor.write(str(cena_2) + "\n")
+
+    subor.close()
+
+def nacitaj():
+    global body, bodov_za_sekundu, bodov_za_klik, cena_1, cena_2
+    try:
+        subor = open("save.txt", "r")
+        premenne = []
+        for riadok in subor:
+            premenne.append(float(riadok[:len(riadok)-1]))
+        
+        body = premenne[0]
+        bodov_za_klik = premenne[1]
+        bodov_za_sekundu = premenne[2]
+        cena_1 = premenne[3]
+        cena_2 = premenne[4]
+    except:
+        print("a")
+        
+
+nacitaj()
+my_loop()
 platno.bind("<Button-1>", klik_lave)
 
 
@@ -63,13 +103,3 @@ B_PlusJedna.pack()
 
 B_PlusJednaZaSekundu = tk.Button(text="Plus 1 za s", command=plus_jedna, width=15, height=3)
 B_PlusJednaZaSekundu.pack()
-
-
-
-
-
-
-
-
-
-
